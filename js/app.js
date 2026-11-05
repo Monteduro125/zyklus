@@ -1,5 +1,6 @@
 import * as C from './cycle.js';
 import { PHASES, PHASE_ORDER, pick } from './tips.js';
+import { WIKI, WIKI_TOPICS } from './wiki.js';
 
 const KEY = 'zyklus.v1';
 const view = document.getElementById('view');
@@ -110,6 +111,7 @@ const views = {
   today: { title: 'Heute', render: renderToday },
   calendar: { title: 'Kalender', render: renderCalendar },
   vacation: { title: 'Urlaub planen', render: renderVacation },
+  wiki: { title: 'Wiki', render: renderWiki },
   history: { title: 'Verlauf', render: renderHistory },
   settings: { title: 'Einstellungen', render: renderSettings },
 };
@@ -231,12 +233,14 @@ function renderToday() {
       <p class="small muted">${range ? `${fmt(range.from)} bis ${fmt(range.to)}` : ''}</p>
       <p><b>${ph.summary}</b></p>
       <ul>${ph.tips.slice(0, 4).map((x) => `<li>${x}</li>`).join('')}</ul>
+      <button class="btn block" id="act-wiki">Mehr zu dieser Phase im Wiki</button>
     </div>
 
     <p class="small muted">Typische Tendenzen, keine Garantie. Am besten einfach nachfragen.</p>`;
 
   view.querySelector('#act-start')?.addEventListener('click', () => startPeriod(t));
   view.querySelector('#act-end')?.addEventListener('click', () => endPeriod(t));
+  view.querySelector('#act-wiki').addEventListener('click', () => { wikiPhase = info.phase; go('wiki'); });
 }
 
 function renderCalendar() {
@@ -296,6 +300,27 @@ function daySheet(iso) {
   sheetBody.querySelector('#ds-end')?.addEventListener('click', () => { sheet.close(); endPeriod(iso); });
 }
 sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.close(); });
+
+let wikiPhase = null;
+function renderWiki() {
+  const t = today();
+  const info = state.periods.length ? C.dayInfo(t, state.periods, stats(), t) : null;
+  const sel = wikiPhase || (info && info.phase) || 'menstruation';
+  const chips = PHASE_ORDER.map((k) => `<button class="chip ${k === sel ? 'on' : ''}" data-phase="${k}" style="--c:${PHASES[k].color}">${PHASES[k].name}</button>`).join('');
+  const ph = PHASES[sel];
+  const w = WIKI[sel];
+  view.innerHTML = `
+    <div class="chips" role="tablist">${chips}</div>
+    <div class="card" style="border-top:4px solid ${ph.color}">
+      <p class="phase-name">${ph.name}${info && info.phase === sel ? ' <span class="pill" style="background:' + ph.color + '">jetzt</span>' : ''}</p>
+      <p class="muted small">${ph.summary}</p>
+      <dl class="wiki">${WIKI_TOPICS.map((tp) => `<dt>${tp.label}</dt><dd>${w[tp.key]}</dd>`).join('')}</dl>
+    </div>
+    <p class="small muted">Typische Tendenzen, keine Garantie und keine medizinische Beratung. Jede Frau erlebt ihren Zyklus anders.</p>`;
+  view.querySelectorAll('[data-phase]').forEach((b) => b.addEventListener('click', () => { wikiPhase = b.dataset.phase; render(); }));
+  const on = view.querySelector('.chip.on');
+  on.parentElement.scrollLeft = on.offsetLeft - (on.parentElement.clientWidth - on.offsetWidth) / 2;
+}
 
 let vacationLength = 7;
 function renderVacation() {
@@ -475,10 +500,14 @@ function renderSettings() {
 }
 
 // ---------- Start ----------
-document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
-  current = b.dataset.tab;
+function go(tab) {
+  current = tab;
   window.scrollTo(0, 0);
   render();
+}
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
+  if (b.dataset.tab === 'wiki') wikiPhase = null;
+  go(b.dataset.tab);
 }));
 
 // Bei Rückkehr zur App den Tag neu berechnen.

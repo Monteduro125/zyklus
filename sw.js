@@ -1,6 +1,6 @@
 // Offline-Cache. Bei jeder Änderung an Dateien die Version erhöhen.
-const CACHE = 'zyklus-v1';
-const FILES = ['./', 'index.html', 'styles.css', 'js/app.js', 'js/cycle.js', 'js/tips.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
+const CACHE = 'zyklus-v1.1';
+const FILES = ['./', 'index.html', 'styles.css', 'js/app.js', 'js/cycle.js', 'js/tips.js', 'js/wiki.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));

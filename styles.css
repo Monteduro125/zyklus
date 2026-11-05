@@ -115,3 +115,14 @@ dialog { border: 0; border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px +
 dialog::backdrop { background: rgba(0,0,0,.45); }
 
 .toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 10; max-width: calc(100% - 32px); }
+
+/* Wiki */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 14px; cursor: pointer; min-height: 40px; }
+.chip::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--c); margin-right: 7px; }
+.chip.on { background: var(--c); border-color: var(--c); color: #fff; font-weight: 600; }
+.chip.on::before { background: #fff; }
+.wiki { margin: 12px 0 0; }
+.wiki dt { font-weight: 600; margin-top: 12px; }
+.wiki dd { margin: 2px 0 0; color: var(--text); }
