@@ -27,15 +27,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
-
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.11.1
 
+      # Das Android SDK ist auf den GitHub-Runnern vorinstalliert (ANDROID_HOME).
       - name: APK bauen
         working-directory: android
-        run: gradle assembleRelease --no-daemon
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          gradle assembleRelease --no-daemon
 
       - name: APK umbenennen
         run: cp android/app/build/outputs/apk/release/app-release.apk zyklus.apk
