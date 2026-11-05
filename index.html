@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zyklus</title>
+  <meta name="description" content="Periodentracker aus Partner-Sicht. Alle Daten bleiben auf diesem Gerät.">
+  <meta name="theme-color" content="#1c1a24">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1 id="title">Heute</h1>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <nav class="tabs" aria-label="Navigation">
+    <button data-tab="today" class="active"><span class="ico">◐</span>Heute</button>
+    <button data-tab="calendar"><span class="ico">▦</span>Kalender</button>
+    <button data-tab="vacation"><span class="ico">✈</span>Urlaub</button>
+    <button data-tab="history"><span class="ico">≡</span>Verlauf</button>
+    <button data-tab="settings"><span class="ico">⚙</span>Einstellungen</button>
+  </nav>
+
+  <dialog id="sheet"><div id="sheet-body"></div></dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
