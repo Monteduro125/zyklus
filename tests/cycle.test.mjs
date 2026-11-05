@@ -62,3 +62,9 @@ test('Urlaubsfenster ohne Periode', () => {
   assert.ok(w.length >= 4);
   for (const x of w) assert.equal(x.periodDays, 0);
 });
+
+import { WIKI, WIKI_TOPICS } from '../js/wiki.js';
+import { PHASE_ORDER } from '../js/tips.js';
+test('Wiki hat fuer jede Phase jedes Thema', () => {
+  for (const ph of PHASE_ORDER) for (const t of WIKI_TOPICS) assert.ok(WIKI[ph]?.[t.key], `${ph}.${t.key}`);
+});

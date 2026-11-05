@@ -9,8 +9,9 @@ Alle Daten bleiben im Browser auf deinem Gerät. Es gibt kein Konto, keinen Serv
 - **Heute:** Zyklustag, Phase, Energie, Tipp des Tages, Date-Idee, Vorschau auf die nächsten 7 Tage.
 - **Kalender:** Phasen farbig für den letzten und die nächsten 6 Monate. Tippe auf einen Tag, um Details zu sehen oder einen Start nachzutragen.
 - **Urlaub:** Vorschläge für Reisezeiträume ohne Periode und Prüfung eigener Zeiträume.
+- **Wiki:** Je Phase ein kurzer Satz zu Stimmung, Energie, Stress und Reizbarkeit, Sport, Appetit, Schlaf, Nähe, Körper und Gesprächen.
 - **Verlauf:** Alle Einträge, ändern, löschen, ältere Perioden nachtragen.
-- **Einstellungen:** Zykluslänge und Periodendauer automatisch oder fest, Backup speichern und laden.
+- **Optionen:** Zykluslänge und Periodendauer automatisch oder fest, Backup speichern und laden.
 
 ## So rechnet die App
 
