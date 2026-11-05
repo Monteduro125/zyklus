@@ -118,6 +118,7 @@ const views = {
 let current = 'today';
 
 function render() {
+  if (!views[current]) current = 'today';
   titleEl.textContent = views[current].title;
   view.innerHTML = '';
   views[current].render();
@@ -519,5 +520,11 @@ document.addEventListener('visibilitychange', () => {
 render();
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  // Wenn eine neue Version übernimmt, einmal neu laden, damit alle Dateien zusammenpassen.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController && !reloaded) { reloaded = true; location.reload(); }
+  });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
 }
