@@ -1,6 +1,10 @@
 import * as C from './cycle.js';
 import { PHASES, PHASE_ORDER, pick } from './tips.js';
 import { WIKI, WIKI_TOPICS } from './wiki.js';
+import { buildWidgetData } from './widget.js';
+
+// In der Android-App stellt der Wrapper diese Brücke bereit.
+const android = window.ZyklusAndroid || null;
 
 const KEY = 'zyklus.v1';
 const view = document.getElementById('view');
@@ -27,6 +31,16 @@ function save() {
   state.periods = C.sortPeriods(state.periods);
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
   catch (e) { toast('Speichern fehlgeschlagen. Ist der Speicher voll oder gesperrt?'); }
+  syncWidgets();
+}
+
+// Widgets mit den nächsten 60 Tagen versorgen (nur in der Android-App).
+function syncWidgets() {
+  if (!android) return;
+  try {
+    const data = buildWidgetData(state.periods, C.computeStats(state.periods, state.settings), C.todayISO());
+    android.setWidgetData(JSON.stringify(data));
+  } catch (e) { /* Widget-Update ist nicht kritisch */ }
 }
 
 // ---------- Helfer ----------
@@ -478,6 +492,8 @@ function renderSettings() {
   view.querySelector('#s-dc').onchange = (e) => { const v = Number(e.target.value); if (v >= 21 && v <= 45) { s.defaultCycle = v; save(); render(); } };
   view.querySelector('#s-dp').onchange = (e) => { const v = Number(e.target.value); if (v >= 2 && v <= 10) { s.defaultPeriod = v; save(); render(); } };
   view.querySelector('#s-export').onclick = () => {
+    const json = JSON.stringify({ app: 'zyklus', version: 1, exported: today(), ...state }, null, 2);
+    if (android) { android.shareBackup(json, `zyklus-backup-${today()}.json`); return; }
     const blob = new Blob([JSON.stringify({ app: 'zyklus', version: 1, exported: today(), ...state }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -514,12 +530,13 @@ document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('cli
 // Bei Rückkehr zur App den Tag neu berechnen.
 let renderedFor = today();
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && today() !== renderedFor) { renderedFor = today(); render(); }
+  if (!document.hidden && today() !== renderedFor) { renderedFor = today(); render(); syncWidgets(); }
 });
 
 render();
+syncWidgets();
 
-if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+if (!android && 'serviceWorker' in navigator && location.protocol !== 'file:') {
   // Wenn eine neue Version übernimmt, einmal neu laden, damit alle Dateien zusammenpassen.
   const hadController = !!navigator.serviceWorker.controller;
   let reloaded = false;
