@@ -31,6 +31,20 @@ Die Tipps beschreiben typische Tendenzen und sind keine medizinische Beratung. D
 
 Unter **Settings → Pages** als Quelle „Deploy from a branch“, Branch `main` und Ordner `/ (root)` wählen. Nach etwa einer Minute ist die App unter `https://<dein-name>.github.io/<repo>/` erreichbar.
 
+## Android-App mit Widgets
+
+Im Ordner `android/` liegt eine kleine Android-App, die dieselbe Web-App anzeigt und drei Widgets mitbringt:
+
+- **Klein (2×1):** Farbe der Phase, neutrale Bezeichnung und Countdown zum nächsten Date-Night-Fenster
+- **Mittel (4×2):** Ring mit Tag, Energie und eine Idee für heute (Unternehmung oder Chillen zu Hause)
+- **Woche (4×1):** die nächsten 7 Tage als Farbpunkte
+
+Die Widgets sind bewusst neutral formuliert, weil der Startbildschirm für andere sichtbar ist.
+
+GitHub baut die App bei jedem Push automatisch (Actions → „Android-App bauen“). Die neueste APK liegt immer unter **Releases → latest**. Auf dem Handy herunterladen, öffnen und die Installation aus dieser Quelle erlauben. Updates installierst du genauso, die Daten bleiben erhalten.
+
+Die Android-App hat ihren eigenen Speicher. Daten aus der Browser-Version überträgst du einmal per „Backup speichern“ und „Backup laden“.
+
 ## Entwicklung
 
 Kein Build-Schritt. Lokal starten mit `python3 -m http.server` und `http://localhost:8000` öffnen. Tests der Zykluslogik: `npm test` (Node 20 oder neuer).

@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Die Web-App aus dem Repo-Root wird beim Build in die Android-App kopiert.
+def copyWebAssets = tasks.register('copyWebAssets', Copy) {
+    from(rootProject.file('..')) {
+        include 'index.html', 'styles.css', 'manifest.webmanifest', 'js/**', 'icons/**'
+    }
+    into layout.buildDirectory.dir('generated/webassets/www')
+}
+
+android {
+    namespace 'de.zyklus.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'de.zyklus.app'
+        minSdk 26
+        targetSdk 35
+        // Jeder GitHub-Build bekommt eine höhere Nummer, damit Android das Update annimmt.
+        versionCode((System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger())
+        versionName '1.2'
+    }
+
+    // Fester Schlüssel, damit Updates ohne Neuinstallation (und ohne Datenverlust) gehen.
+    signingConfigs {
+        shared {
+            storeFile rootProject.file('zyklus-debug.keystore')
+            storePassword 'android'
+            keyAlias 'zyklus'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        debug { signingConfig signingConfigs.shared }
+        release {
+            signingConfig signingConfigs.shared
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs += [layout.buildDirectory.dir('generated/webassets').get().asFile]
+        }
+    }
+}
+
+tasks.named('preBuild') { dependsOn copyWebAssets }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}

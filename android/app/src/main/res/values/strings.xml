@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zyklus</string>
+    <string name="widget_small">Zyklus klein</string>
+    <string name="widget_medium">Zyklus mit Tagesidee</string>
+    <string name="widget_week">Zyklus Woche</string>
+    <string name="widget_empty">App öffnen</string>
+</resources>

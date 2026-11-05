@@ -68,3 +68,17 @@ import { PHASE_ORDER } from '../js/tips.js';
 test('Wiki hat fuer jede Phase jedes Thema', () => {
   for (const ph of PHASE_ORDER) for (const t of WIKI_TOPICS) assert.ok(WIKI[ph]?.[t.key], `${ph}.${t.key}`);
 });
+
+import { buildWidgetData, WIDGET_IDEAS, WIDGET_LABELS } from '../js/widget.js';
+test('Widget-Texte enthalten keine verraeterischen Woerter', () => {
+  const ps = [{ start: '2026-10-10', end: '2026-10-16' }];
+  const w = buildWidgetData(ps, C.computeStats(ps), '2026-11-05');
+  assert.equal(w.days.length, 60);
+  const visible = w.days.map(({ label, idea, next, date }) => [label, idea, next, date]);
+  const all = JSON.stringify([visible, Object.values(WIDGET_IDEAS), Object.values(WIDGET_LABELS)]);
+  for (const bad of [/period/i, /PMS/, /Eisprung/i, /Menstru/i, /Blutung/i, /Zyklus/i]) assert.doesNotMatch(all, bad);
+  assert.equal(w.days[0].d, '2026-11-05');
+  assert.equal(w.days[0].next, 'Noch 2 Tage Sanft');
+  assert.equal(w.days[1].next, 'Ab morgen: Ruhetage');
+  assert.ok(w.days.some((d) => d.date === 'Heute: Date-Night-Fenster'));
+});
